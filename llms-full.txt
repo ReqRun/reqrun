@@ -1,0 +1,79 @@
+# ReqRun GitHub Repo
+
+ReqRun is a reliability layer for OpenAI-compatible LLM request execution.
+
+Its job is narrow:
+- accept OpenAI-style chat completion requests
+- queue them durably
+- retry transient failures
+- deduplicate repeated logical operations
+- expose a stable request id and later status
+
+## Start here
+
+- README.md
+- examples/README.md
+- packages/sdk-js/README.md
+- SECURITY.md
+
+## Public product entry points
+
+- Marketing site: https://www.reqrun.com
+- Docs: https://www.reqrun.com/docs
+- Quickstart: https://www.reqrun.com/docs/quickstart
+- API reference: https://www.reqrun.com/docs/api
+- TypeScript SDK docs: https://www.reqrun.com/docs/sdk/typescript
+- Machine-readable docs: https://www.reqrun.com/llms.txt
+- Extended machine-readable docs: https://www.reqrun.com/llms-full.txt
+
+## Canonical request facts
+
+Base URL:
+https://api.reqrun.com
+
+Auth:
+Bearer ReqRun project API key
+
+Submit endpoint:
+POST /v1/chat/completions
+
+Status endpoint:
+GET /v1/requests/{id}
+
+Important behavior:
+- ReqRun request ids start with rr_
+- use wait=true for fast-path completion
+- use wait=false for background work
+- use idempotency_key for retried or repeatable operations
+
+## Product boundary
+
+ReqRun does:
+- request queueing
+- retry logic
+- idempotency
+- wait mode
+- request status visibility
+
+ReqRun does not do:
+- streaming in v1
+- multi-provider routing
+- workflow orchestration
+- analytics product surface
+- provider marketplace behavior
+
+## Repo surfaces for later public split
+
+This repo already contains split-ready example starters for:
+- Next.js route handlers
+- Express APIs
+- FastAPI services
+- Cloudflare Workers
+- Vercel functions
+- Netlify functions
+- Supabase edge functions
+- AWS Lambda
+- GitHub Actions
+- cron-based polling flows
+
+Those examples are intended to become separate public repos under the ReqRun GitHub org later.

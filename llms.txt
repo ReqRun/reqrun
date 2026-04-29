@@ -1,0 +1,33 @@
+# ReqRun GitHub Repo
+
+This repository describes ReqRun, a reliability layer for OpenAI-compatible non-streaming chat completion requests.
+
+Best starting points:
+- README.md
+- examples/README.md
+- packages/sdk-js/README.md
+- SECURITY.md
+
+Canonical public product facts:
+- Hosted API: https://api.reqrun.com
+- Docs: https://www.reqrun.com/docs
+- Quickstart: https://www.reqrun.com/docs/quickstart
+- API reference: https://www.reqrun.com/docs/api
+- llms.txt: https://www.reqrun.com/llms.txt
+- llms-full.txt: https://www.reqrun.com/llms-full.txt
+
+Current integration facts:
+- POST /v1/chat/completions
+- GET /v1/requests/{id}
+- Bearer ReqRun project API key
+- Async request ids start with rr_
+- wait=true returns fast-path completion when available
+- wait=false returns async request state immediately
+
+Current product boundary:
+- reliability layer only
+- OpenAI-compatible
+- non-streaming only in v1
+- no workflow builder
+- no analytics suite
+- no provider marketplace
