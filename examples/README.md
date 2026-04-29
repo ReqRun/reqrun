@@ -2,7 +2,13 @@
 
 These starters show where ReqRun fits into real apps and services.
 
-Each folder is intentionally small, runtime-specific, and ready to be split into its own public GitHub repo later.
+The first runnable standalone repos now live in the ReqRun GitHub org:
+
+- [ReqRun/reqrun-example-nextjs-route-handler](https://github.com/ReqRun/reqrun-example-nextjs-route-handler)
+- [ReqRun/reqrun-example-express-api](https://github.com/ReqRun/reqrun-example-express-api)
+- [ReqRun/reqrun-example-fastapi-service](https://github.com/ReqRun/reqrun-example-fastapi-service)
+
+The rest of this index stays as the roadmap for more split-out example repos.
 
 ## Suggested public repo lineup
 

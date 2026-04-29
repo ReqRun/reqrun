@@ -112,6 +112,12 @@ Until the npm package is published, use the hosted API directly or build the SDK
 - Docs: [www.reqrun.com/docs](https://www.reqrun.com/docs)
 - TypeScript SDK docs: [www.reqrun.com/docs/sdk/typescript](https://www.reqrun.com/docs/sdk/typescript)
 
+## Repo docs for developers and agents
+
+- Developer quickstart: [`./docs/dev-quickstart.md`](./docs/dev-quickstart.md)
+- Agent integration guide: [`./docs/agent-guide.md`](./docs/agent-guide.md)
+- OpenAPI contract: [`./openapi.yaml`](./openapi.yaml)
+
 ## Machine-readable surfaces
 
 - Repo `llms.txt`: [`./llms.txt`](./llms.txt)
@@ -119,20 +125,15 @@ Until the npm package is published, use the hosted API directly or build the SDK
 - Hosted `llms.txt`: [www.reqrun.com/llms.txt](https://www.reqrun.com/llms.txt)
 - Hosted `llms-full.txt`: [www.reqrun.com/llms-full.txt](https://www.reqrun.com/llms-full.txt)
 
-## Example starters
+## Runnable example repos
 
-Ten example starters live in [`examples/`](./examples/README.md). Each one is written to be split into its own public GitHub repo later.
+These standalone repos are the best starting points today:
 
-1. [Next.js route handler](./examples/nextjs-route-handler/README.md)
-2. [Express API](./examples/express-api/README.md)
-3. [FastAPI service](./examples/fastapi-service/README.md)
-4. [Cloudflare Worker](./examples/cloudflare-worker/README.md)
-5. [Vercel function](./examples/vercel-function/README.md)
-6. [Netlify function](./examples/netlify-function/README.md)
-7. [Supabase edge function](./examples/supabase-edge-function/README.md)
-8. [AWS Lambda](./examples/aws-lambda/README.md)
-9. [GitHub Actions](./examples/github-actions/README.md)
-10. [Cron poller](./examples/cron-poller/README.md)
+1. [ReqRun/reqrun-example-nextjs-route-handler](https://github.com/ReqRun/reqrun-example-nextjs-route-handler)
+2. [ReqRun/reqrun-example-express-api](https://github.com/ReqRun/reqrun-example-express-api)
+3. [ReqRun/reqrun-example-fastapi-service](https://github.com/ReqRun/reqrun-example-fastapi-service)
+
+The broader examples index still lives in [`examples/`](./examples/README.md).
 
 ## Repo structure
 

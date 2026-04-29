@@ -4,6 +4,9 @@ This repository describes ReqRun, a reliability layer for OpenAI-compatible non-
 
 Best starting points:
 - README.md
+- docs/dev-quickstart.md
+- docs/agent-guide.md
+- openapi.yaml
 - examples/README.md
 - packages/sdk-js/README.md
 - SECURITY.md
@@ -23,6 +26,11 @@ Current integration facts:
 - Async request ids start with rr_
 - wait=true returns fast-path completion when available
 - wait=false returns async request state immediately
+
+Runnable standalone examples:
+- https://github.com/ReqRun/reqrun-example-nextjs-route-handler
+- https://github.com/ReqRun/reqrun-example-express-api
+- https://github.com/ReqRun/reqrun-example-fastapi-service
 
 Current product boundary:
 - reliability layer only

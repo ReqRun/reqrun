@@ -12,6 +12,9 @@ Its job is narrow:
 ## Start here
 
 - README.md
+- docs/dev-quickstart.md
+- docs/agent-guide.md
+- openapi.yaml
 - examples/README.md
 - packages/sdk-js/README.md
 - SECURITY.md
@@ -77,3 +80,11 @@ This repo already contains split-ready example starters for:
 - cron-based polling flows
 
 Those examples are intended to become separate public repos under the ReqRun GitHub org later.
+
+## Runnable standalone repos
+
+The first real clone-and-run public example repos are:
+
+- https://github.com/ReqRun/reqrun-example-nextjs-route-handler
+- https://github.com/ReqRun/reqrun-example-express-api
+- https://github.com/ReqRun/reqrun-example-fastapi-service

@@ -1,0 +1,328 @@
+openapi: 3.0.3
+info:
+  title: ReqRun API
+  version: 1.0.0
+  description: >
+    LLM request reliability layer for OpenAI-compatible requests.
+    Supports non-streaming chat completions, async execution, retries,
+    idempotency, and request status lookup.
+
+servers:
+  - url: https://api.reqrun.com
+
+security:
+  - bearerAuth: []
+
+paths:
+  /v1/chat/completions:
+    post:
+      summary: Create chat completion
+      description: >
+        Accepts an OpenAI-style non-streaming chat completion request.
+        The authenticated API key resolves the project. If wait=true and the
+        request completes within the wait timeout, ReqRun returns a normal chat
+        completion response. Otherwise it returns an async response using the
+        durable ReqRun request id.
+      operationId: createChatCompletion
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: Completed response or accepted async response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ChatCompletionResponse'
+                  - $ref: '#/components/schemas/AsyncChatCompletionResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/requests/{id}:
+    get:
+      summary: Get request status
+      description: Returns the current status of an async request.
+      operationId: getRequest
+      tags:
+        - Requests
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestStatusResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    ChatMessage:
+      type: object
+      additionalProperties: false
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [system, user, assistant]
+        content:
+          type: string
+
+    ChatCompletionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - model
+        - messages
+      properties:
+        model:
+          type: string
+          minLength: 1
+        messages:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        max_tokens:
+          type: integer
+          minimum: 1
+        top_p:
+          type: number
+          minimum: 0
+          maximum: 1
+        presence_penalty:
+          type: number
+          minimum: -2
+          maximum: 2
+        frequency_penalty:
+          type: number
+          minimum: -2
+          maximum: 2
+        stream:
+          type: boolean
+          enum: [false]
+          default: false
+          description: Non-streaming only. true is rejected.
+        wait:
+          type: boolean
+          default: false
+          description: Wait briefly for completion before falling back to an async response.
+        idempotency_key:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Deduplicates requests within the authenticated project.
+
+    ChoiceMessage:
+      type: object
+      additionalProperties: true
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+        content:
+          type: string
+
+    ChatChoice:
+      type: object
+      additionalProperties: true
+      required:
+        - index
+        - message
+        - finish_reason
+      properties:
+        index:
+          type: integer
+        message:
+          $ref: '#/components/schemas/ChoiceMessage'
+        finish_reason:
+          type: string
+          nullable: true
+
+    Usage:
+      type: object
+      additionalProperties: true
+      required:
+        - prompt_tokens
+        - completion_tokens
+        - total_tokens
+      properties:
+        prompt_tokens:
+          type: integer
+        completion_tokens:
+          type: integer
+        total_tokens:
+          type: integer
+
+    ChatCompletionResponse:
+      type: object
+      additionalProperties: true
+      required:
+        - id
+        - object
+        - created
+        - model
+        - choices
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum: [chat.completion]
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatChoice'
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    AsyncChatCompletionResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - object
+        - status
+        - created
+      properties:
+        id:
+          type: string
+          description: ReqRun request id, starts with rr_ and is not an OpenAI chat completion id.
+        object:
+          type: string
+          enum: [chat.completion.async]
+        status:
+          type: string
+          enum: [queued, processing, retrying, failed]
+        created:
+          type: integer
+
+    RequestStatusResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - attempts
+        - created_at
+        - updated_at
+        - last_error_code
+        - result
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing, completed, retrying, failed]
+        attempts:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_error_code:
+          type: string
+          nullable: true
+        result:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ChatCompletionResponse'
+
+    ErrorObject:
+      type: object
+      additionalProperties: false
+      required:
+        - message
+        - type
+        - code
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+        code:
+          type: string
+
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorObject'
