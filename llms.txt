@@ -31,6 +31,9 @@ Runnable standalone examples:
 - https://github.com/ReqRun/reqrun-example-nextjs-route-handler
 - https://github.com/ReqRun/reqrun-example-express-api
 - https://github.com/ReqRun/reqrun-example-fastapi-service
+- https://github.com/ReqRun/reqrun-example-cloudflare-worker
+- https://github.com/ReqRun/reqrun-example-aws-lambda
+- https://github.com/ReqRun/reqrun-example-vercel-function
 
 Current product boundary:
 - reliability layer only

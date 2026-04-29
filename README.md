@@ -132,6 +132,9 @@ These standalone repos are the best starting points today:
 1. [ReqRun/reqrun-example-nextjs-route-handler](https://github.com/ReqRun/reqrun-example-nextjs-route-handler)
 2. [ReqRun/reqrun-example-express-api](https://github.com/ReqRun/reqrun-example-express-api)
 3. [ReqRun/reqrun-example-fastapi-service](https://github.com/ReqRun/reqrun-example-fastapi-service)
+4. [ReqRun/reqrun-example-cloudflare-worker](https://github.com/ReqRun/reqrun-example-cloudflare-worker)
+5. [ReqRun/reqrun-example-aws-lambda](https://github.com/ReqRun/reqrun-example-aws-lambda)
+6. [ReqRun/reqrun-example-vercel-function](https://github.com/ReqRun/reqrun-example-vercel-function)
 
 The broader examples index still lives in [`examples/`](./examples/README.md).
 
