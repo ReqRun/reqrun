@@ -1,21 +1,19 @@
-MIT License
+Copyright (c) 2026 Digiproduct OU. All rights reserved.
 
-Copyright (c) 2026 ReqRun
+This repository is public for product discovery, documentation, and evaluation.
+No open-source license is granted for the contents of this repository unless a
+specific file or future repository states otherwise in writing.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Except as expressly permitted by applicable law, you may not copy, modify,
+redistribute, sublicense, create derivative works from, or commercially exploit
+the contents of this repository without prior written permission from
+Digiproduct OU.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The hosted ReqRun API and dashboard are separate services with their own terms,
+policies, and commercial access model:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- https://www.reqrun.com/terms
+- https://www.reqrun.com/privacy
+- https://www.reqrun.com/refund-policy
+
+Licensing or usage questions: support@reqrun.com

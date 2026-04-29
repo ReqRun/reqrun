@@ -6,7 +6,9 @@ Planned canonical package: `@reqrun/sdk`
 
 If you searched for `reqrun`, the supported SDK and docs still live under `@reqrun/sdk`.
 
-License: MIT for the published SDK package only. ReqRun's hosted backend, worker, dashboard, billing logic, and deployment stack are not included in this package.
+This repo is a public reference surface for the planned SDK. If a future
+published package has its own license, that license will be stated with the
+package when it is released.
 
 ## Publish status
 

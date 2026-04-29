@@ -34,6 +34,14 @@ Use ReqRun when:
 - not an analytics suite
 - not a model-routing platform
 
+## License status
+
+This public repository is not published under MIT or another open-source license.
+
+It is a public product and documentation surface for ReqRun. If specific example
+repos or a future SDK package are published under their own license, that
+license will be stated in those artifacts directly.
+
 ## Hosted API quickstart
 
 Today, the most stable public integration path is the hosted API at `https://api.reqrun.com`.
@@ -128,15 +136,16 @@ Ten example starters live in [`examples/`](./examples/README.md). Each one is wr
 
 ## Repo structure
 
-This repo currently contains:
+This public repo currently contains:
 
-- hosted backend and worker
-- hosted dashboard
-- marketing site
-- JavaScript SDK source
-- example starters
+- public product overview and quickstarts
+- machine-readable `llms.txt` surfaces
+- SDK shape and API usage documentation
+- example starter references for future public repos
 
-The hosted product stack stays private. The public developer surface is the API, docs, and example starters.
+The hosted ReqRun backend, worker, dashboard, billing logic, and deployment
+stack stay private. The public developer surface is the API, docs, and example
+starters.
 
 ## Public repo plan
 
