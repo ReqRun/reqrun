@@ -118,12 +118,17 @@ if (response.object === "chat.completion.async") {
 
 The JavaScript SDK source lives in [`packages/sdk-js`](./packages/sdk-js).
 
-Planned public package names:
+Available public package:
 
 - `@reqrun/sdk` as the canonical SDK
-- `reqrun` as the reserved alias
 
-Until the npm package is published, use the hosted API directly or build the SDK from source in this repo.
+Install:
+
+```bash
+npm install @reqrun/sdk
+```
+
+The unscoped `reqrun` alias is still pending npm account-level publish permission. Until that name is available, use `@reqrun/sdk`.
 
 For full signed helper implementations today, clone one of the runnable example repos or use the developer quickstart in [`./docs/dev-quickstart.md`](./docs/dev-quickstart.md).
 

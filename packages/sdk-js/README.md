@@ -2,29 +2,19 @@
 
 ReqRun is an LLM request reliability layer that durably runs OpenAI-compatible chat completion requests and lets you check their status.
 
-Planned canonical package: `@reqrun/sdk`
+Canonical package: `@reqrun/sdk`
 
 If you searched for `reqrun`, the supported SDK and docs still live under `@reqrun/sdk`.
 
-This repo is a public reference surface for the planned SDK. If a future
-published package has its own license, that license will be stated with the
-package when it is released.
+License: MIT for the published SDK package only. ReqRun's hosted backend, worker, dashboard, billing logic, and deployment stack are not included in this package.
 
-## Publish status
-
-The public npm package is not published yet.
-
-Until it is published:
-
-- use the hosted API at `https://api.reqrun.com`
-- use the docs at [https://www.reqrun.com/docs](https://www.reqrun.com/docs)
-- treat this package source as the intended stable client shape
-
-## Planned install
+## Install
 
 ```bash
 npm install @reqrun/sdk
 ```
+
+Docs: [https://www.reqrun.com/docs/sdk/typescript](https://www.reqrun.com/docs/sdk/typescript)
 
 ## Quickstart
 
@@ -33,6 +23,7 @@ import { ReqRun } from "@reqrun/sdk";
 
 const reqrun = new ReqRun({
   apiKey: process.env.REQRUN_API_KEY!,
+  signingSecret: process.env.REQRUN_SIGNING_SECRET!,
   baseURL: "https://api.reqrun.com",
 });
 
@@ -97,8 +88,8 @@ if (request.result) {
 
 ## API Surface
 
-- `new ReqRun({ apiKey, baseURL? })`
+- `new ReqRun({ apiKey, signingSecret?, baseURL? })`
 - `reqrun.chat.completions.create(params)`
 - `reqrun.requests.get(id)`
 
-Project ownership is resolved from the API key. The SDK does not include dashboard/admin actions such as project creation or API key generation.
+Project ownership is resolved from the API key. Hosted keys can also use `signingSecret` so a stolen bearer key alone is not enough to authorize requests. The SDK does not include dashboard/admin actions such as project creation or API key generation.
