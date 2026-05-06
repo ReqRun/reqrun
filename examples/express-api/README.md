@@ -2,13 +2,14 @@
 
 Suggested repo name: `reqrun-example-express-api`
 
-Use this when an Express service should accept work and immediately return a ReqRun request id.
+Use this when a Node API should accept input, submit durable LLM work, and return quickly instead of hiding retries in-process.
 
-## What this starter shows
+## Status
 
-- accept application input in Express
-- submit durable LLM work through ReqRun
-- return quickly with the async request object
+This folder is a docs-only reference.
+
+For a working signed implementation, use:
+- [ReqRun/reqrun-example-express-api](https://github.com/ReqRun/reqrun-example-express-api)
 
 ## What you need
 
@@ -18,39 +19,27 @@ REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 REQRUN_BASE_URL=https://api.reqrun.com
 ```
 
-## Example
+## Request shape
 
 ```ts
-import express from "express";
-
-const app = express();
-app.use(express.json());
-
-app.post("/run", async (req, res) => {
-  const response = await fetch(
-    `${process.env.REQRUN_BASE_URL ?? "https://api.reqrun.com"}/v1/chat/completions`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.REQRUN_API_KEY!}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-5-nano",
-        messages: [{ role: "user", content: req.body.prompt }],
-        wait: false,
-        idempotency_key: req.body.idempotencyKey,
-      }),
-    }
-  );
-
-  const result = await response.json();
-  res.status(response.status).json(result);
+const path = "/v1/chat/completions";
+const bodyString = JSON.stringify({
+  model: "gpt-5-nano",
+  messages: [{ role: "user", content: prompt }],
+  wait: false,
+  idempotency_key: req.body.jobId,
 });
 
-app.listen(3000);
+const response = await fetch(`https://api.reqrun.com${path}`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    ...await buildSignedReqRunHeaders(process.env.REQRUN_API_KEY!, process.env.REQRUN_SIGNING_SECRET!, "POST", path, bodyString),
+  },
+  body: bodyString,
+});
 ```
 
 ## Why ReqRun fits here
 
-Express stays responsible for your app API. ReqRun becomes the reliable execution layer for the model request only.
+Express stays small and predictable while ReqRun owns durable request execution, retries, and status visibility.

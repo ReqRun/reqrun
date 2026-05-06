@@ -2,13 +2,14 @@
 
 Suggested repo name: `reqrun-example-nextjs-route-handler`
 
-Use this when your Next.js app needs to accept a request and hand off durable LLM work through ReqRun.
+Use this when a Next.js app should accept browser input, forward LLM work through server-side route handlers, and return durable request ids.
 
-## What this starter shows
+## Status
 
-- accept a request in a Next.js route handler
-- submit the LLM call to ReqRun instead of OpenAI directly
-- return the durable async response immediately
+This folder is a docs-only reference.
+
+For a working signed implementation, use:
+- [ReqRun/reqrun-example-nextjs-route-handler](https://github.com/ReqRun/reqrun-example-nextjs-route-handler)
 
 ## What you need
 
@@ -18,39 +19,27 @@ REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 REQRUN_BASE_URL=https://api.reqrun.com
 ```
 
-## Example
+## Request shape
 
 ```ts
-import { NextRequest, NextResponse } from "next/server";
+const path = "/v1/chat/completions";
+const bodyString = JSON.stringify({
+  model: "gpt-5-nano",
+  messages: [{ role: "user", content: body.prompt }],
+  wait: false,
+  idempotency_key: body.jobId,
+});
 
-export async function POST(request: NextRequest) {
-  const body = await request.json();
-
-  const response = await fetch(
-    `${process.env.REQRUN_BASE_URL ?? "https://api.reqrun.com"}/v1/chat/completions`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.REQRUN_API_KEY!}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-5-nano",
-        messages: [
-          { role: "system", content: "Return concise JSON." },
-          { role: "user", content: body.prompt },
-        ],
-        wait: false,
-        idempotency_key: body.jobId,
-      }),
-    }
-  );
-
-  const result = await response.json();
-  return NextResponse.json(result, { status: response.status });
-}
+const response = await fetch(`https://api.reqrun.com${path}`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    ...await buildSignedReqRunHeaders(process.env.REQRUN_API_KEY!, process.env.REQRUN_SIGNING_SECRET!, "POST", path, bodyString),
+  },
+  body: bodyString,
+});
 ```
 
 ## Why ReqRun fits here
 
-If the request is slow, retried, or interrupted, your app still gets a stable `rr_` request id instead of losing the operation inside the route handler.
+Next.js route handlers stay focused on app-side orchestration while ReqRun owns durable execution and retry behavior.

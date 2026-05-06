@@ -2,13 +2,14 @@
 
 Suggested repo name: `reqrun-example-fastapi-service`
 
-Use this when your Python backend wants to call ReqRun directly with `httpx`.
+Use this when a Python backend should submit durable LLM work through ReqRun instead of calling the model provider directly.
 
-## What this starter shows
+## Status
 
-- accept application input in FastAPI
-- submit durable LLM work through ReqRun
-- return the accepted or completed result cleanly
+This folder is a docs-only reference.
+
+For a working signed implementation, use:
+- [ReqRun/reqrun-example-fastapi-service](https://github.com/ReqRun/reqrun-example-fastapi-service)
 
 ## What you need
 
@@ -18,34 +19,26 @@ REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 REQRUN_BASE_URL=https://api.reqrun.com
 ```
 
-## Example
+## Request shape
 
-```python
-import os
-import httpx
-from fastapi import FastAPI
+```py
+body = {
+    "model": "gpt-5-nano",
+    "messages": [{"role": "user", "content": prompt}],
+    "wait": False,
+    "idempotency_key": job_id,
+}
 
-app = FastAPI()
+body_string = json.dumps(body, separators=(",", ":"), ensure_ascii=False)
+path = "/v1/chat/completions"
 
-REQRUN_BASE_URL = os.environ.get("REQRUN_BASE_URL", "https://api.reqrun.com")
-REQRUN_API_KEY = os.environ["REQRUN_API_KEY"]
-
-@app.post("/run")
-async def run(prompt: str):
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        response = await client.post(
-            f"{REQRUN_BASE_URL}/v1/chat/completions",
-            headers={"Authorization": f"Bearer {REQRUN_API_KEY}"},
-            json={
-                "model": "gpt-5-nano",
-                "messages": [{"role": "user", "content": prompt}],
-                "wait": False,
-            },
-        )
-        response.raise_for_status()
-        return response.json()
+response = await client.post(
+    f"https://api.reqrun.com{path}",
+    headers=build_signed_reqrun_headers(REQRUN_API_KEY, REQRUN_SIGNING_SECRET, "POST", path, body_string),
+    content=body_string,
+)
 ```
 
 ## Why ReqRun fits here
 
-FastAPI can stay focused on your application logic while ReqRun handles queueing, retries, and durable request status for the model call.
+ReqRun keeps the Python service focused on app logic while the durable execution layer handles retries and result visibility.

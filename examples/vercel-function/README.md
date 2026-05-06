@@ -2,48 +2,44 @@
 
 Suggested repo name: `reqrun-example-vercel-function`
 
-Use this when you want a serverless function to submit work to ReqRun and return the async response immediately.
+Use this when a serverless function should hand long-running LLM work off to ReqRun and return durable status instead of waiting inside one request.
 
-## What this starter shows
+## Status
 
-- accept input in a serverless function
-- send the model request to ReqRun
-- return the durable async response immediately
+This folder is a docs-only reference.
+
+For a working signed implementation, use:
+- [ReqRun/reqrun-example-vercel-function](https://github.com/ReqRun/reqrun-example-vercel-function)
 
 ## What you need
 
 ```env
 REQRUN_API_KEY=REQRUN_LIVE_YOUR_PROJECT_KEY_HERE
 REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
+REQRUN_BASE_URL=https://api.reqrun.com
 ```
 
-## Example
+## Request shape
 
-```ts
-export async function POST(request: Request) {
-  const body = await request.json();
+```js
+const path = "/v1/chat/completions";
+const bodyString = JSON.stringify({
+  model: "gpt-5-nano",
+  messages: [{ role: "user", content: req.body.prompt }],
+  wait: false,
+  idempotency_key: req.body.jobId,
+});
 
-  const response = await fetch("https://api.reqrun.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.REQRUN_API_KEY!}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-5-nano",
-      messages: [{ role: "user", content: body.prompt }],
-      wait: false,
-      idempotency_key: body.jobId,
-    }),
-  });
-
-  return new Response(await response.text(), {
-    status: response.status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
+const response = await fetch(`https://api.reqrun.com${path}`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    ...getSignedReqRunHeaders(process.env.REQRUN_API_KEY!, process.env.REQRUN_SIGNING_SECRET!, "POST", path, bodyString),
+  },
+  body: bodyString,
+});
 ```
 
 ## Why ReqRun fits here
 
-Serverless functions should not own complicated model retry behavior. ReqRun turns that into a durable request record instead.
+Vercel functions are good entry points. ReqRun becomes the durable execution layer once the AI task matters.

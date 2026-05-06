@@ -2,13 +2,14 @@
 
 Suggested repo name: `reqrun-example-cron-poller`
 
-Use this when you want a scheduled process to submit a request, store the async id, and poll for completion later.
+Use this when a scheduled process should submit durable work, store the async request id, and poll later instead of blocking the whole cron run.
 
-## What this starter shows
+## Status
 
-- submit one scheduled request to ReqRun
-- store the `rr_` request id
-- poll for status later instead of blocking the cron job
+This folder is a docs-only reference.
+
+Use the developer quickstart for the exact signing helper:
+- [`../docs/dev-quickstart.md`](../../docs/dev-quickstart.md)
 
 ## What you need
 
@@ -18,34 +19,32 @@ REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 REQRUN_BASE_URL=https://api.reqrun.com
 ```
 
-## Example
+## Request shape
 
 ```js
 const baseURL = process.env.REQRUN_BASE_URL ?? "https://api.reqrun.com";
+const path = "/v1/chat/completions";
+const bodyString = JSON.stringify({
+  model: "gpt-5-nano",
+  messages: [{ role: "user", content: "Generate the daily summary." }],
+  wait: false,
+  idempotency_key: `daily-summary-${new Date().toISOString().slice(0, 10)}`,
+});
 
-const response = await fetch(`${baseURL}/v1/chat/completions`, {
+const response = await fetch(`${baseURL}${path}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${process.env.REQRUN_API_KEY}`,
+    ...await buildSignedReqRunHeaders(process.env.REQRUN_API_KEY, process.env.REQRUN_SIGNING_SECRET, "POST", path, bodyString),
   },
-  body: JSON.stringify({
-    model: "gpt-5-nano",
-    messages: [{ role: "user", content: "Generate the daily summary." }],
-    wait: false,
-    idempotency_key: `daily-summary-${new Date().toISOString().slice(0, 10)}`,
-  }),
+  body: bodyString,
 }).then((res) => res.json());
 
 if (response.object === "chat.completion.async") {
-  console.log("Queued request:", response.id);
-  const result = await fetch(`${baseURL}/v1/requests/${response.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.REQRUN_API_KEY}`,
-    },
+  const requestPath = `/v1/requests/${response.id}`;
+  const result = await fetch(`${baseURL}${requestPath}`, {
+    headers: await buildSignedReqRunHeaders(process.env.REQRUN_API_KEY, process.env.REQRUN_SIGNING_SECRET, "GET", requestPath, ""),
   }).then((res) => res.json());
-
-  console.log("Current status:", result.status);
 }
 ```
 
