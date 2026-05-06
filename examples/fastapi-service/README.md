@@ -14,6 +14,7 @@ Use this when your Python backend wants to call ReqRun directly with `httpx`.
 
 ```env
 REQRUN_API_KEY=REQRUN_LIVE_YOUR_PROJECT_KEY_HERE
+REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 REQRUN_BASE_URL=https://api.reqrun.com
 ```
 

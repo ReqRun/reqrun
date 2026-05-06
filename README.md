@@ -47,33 +47,50 @@ license will be stated in those artifacts directly.
 Today, the most stable public integration path is the hosted API at `https://api.reqrun.com`.
 
 ```ts
+const body = {
+  model: "gpt-5-nano",
+  messages: [{ role: "user", content: "Hello from ReqRun" }],
+  wait: true,
+  idempotency_key: "hello-from-readme-001",
+}
+
+const bodyString = JSON.stringify(body)
+
 const response = await fetch("https://api.reqrun.com/v1/chat/completions", {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer REQRUN_LIVE_YOUR_PROJECT_KEY_HERE",
-  },
-  body: JSON.stringify({
-    model: "gpt-5-nano",
-    messages: [{ role: "user", content: "Hello from ReqRun" }],
-    wait: true,
-    idempotency_key: "hello-from-readme-001",
+  headers: await buildSignedReqRunHeaders({
+    apiKey: process.env.REQRUN_API_KEY!,
+    signingSecret: process.env.REQRUN_SIGNING_SECRET!,
+    method: "POST",
+    path: "/v1/chat/completions",
+    bodyString,
   }),
+  body: bodyString,
 })
 
 const data = await response.json()
 console.log(data)
 ```
 
+Hosted ReqRun keys now come with a signing secret. The bearer key and signing secret are both required for new hosted integrations.
+
 ## Async request flow
 
 ```ts
 const response = await fetch("https://api.reqrun.com/v1/chat/completions", {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer REQRUN_LIVE_YOUR_PROJECT_KEY_HERE",
-  },
+  headers: await buildSignedReqRunHeaders({
+    apiKey: process.env.REQRUN_API_KEY!,
+    signingSecret: process.env.REQRUN_SIGNING_SECRET!,
+    method: "POST",
+    path: "/v1/chat/completions",
+    bodyString: JSON.stringify({
+      model: "gpt-5-nano",
+      messages: [{ role: "user", content: "Run this in the background." }],
+      wait: false,
+      idempotency_key: "job-123",
+    }),
+  }),
   body: JSON.stringify({
     model: "gpt-5-nano",
     messages: [{ role: "user", content: "Run this in the background." }],
@@ -84,9 +101,13 @@ const response = await fetch("https://api.reqrun.com/v1/chat/completions", {
 
 if (response.object === "chat.completion.async") {
   const request = await fetch(`https://api.reqrun.com/v1/requests/${response.id}`, {
-    headers: {
-      "Authorization": "Bearer REQRUN_LIVE_YOUR_PROJECT_KEY_HERE",
-    },
+    headers: await buildSignedReqRunHeaders({
+      apiKey: process.env.REQRUN_API_KEY!,
+      signingSecret: process.env.REQRUN_SIGNING_SECRET!,
+      method: "GET",
+      path: `/v1/requests/${response.id}`,
+      bodyString: "",
+    }),
   }).then((res) => res.json())
 
   console.log(request.status)
@@ -103,6 +124,8 @@ Planned public package names:
 - `reqrun` as the reserved alias
 
 Until the npm package is published, use the hosted API directly or build the SDK from source in this repo.
+
+For full signed helper implementations today, clone one of the runnable example repos or use the developer quickstart in [`./docs/dev-quickstart.md`](./docs/dev-quickstart.md).
 
 ## Public surfaces
 

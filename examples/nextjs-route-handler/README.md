@@ -14,6 +14,7 @@ Use this when your Next.js app needs to accept a request and hand off durable LL
 
 ```env
 REQRUN_API_KEY=REQRUN_LIVE_YOUR_PROJECT_KEY_HERE
+REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 REQRUN_BASE_URL=https://api.reqrun.com
 ```
 

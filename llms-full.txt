@@ -35,7 +35,7 @@ Base URL:
 https://api.reqrun.com
 
 Auth:
-Bearer ReqRun project API key
+Bearer ReqRun project API key plus X-ReqRun-Timestamp, X-ReqRun-Nonce, and X-ReqRun-Signature derived from the project's signing secret
 
 Submit endpoint:
 POST /v1/chat/completions

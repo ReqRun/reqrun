@@ -14,6 +14,7 @@ Use this when a Supabase edge function should submit durable AI work and return 
 
 ```env
 REQRUN_API_KEY=REQRUN_LIVE_YOUR_PROJECT_KEY_HERE
+REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 ```
 
 ## Example

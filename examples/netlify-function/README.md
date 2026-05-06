@@ -14,6 +14,7 @@ Use this when a Netlify function needs a simple fetch-based handoff to ReqRun.
 
 ```env
 REQRUN_API_KEY=REQRUN_LIVE_YOUR_PROJECT_KEY_HERE
+REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 ```
 
 ## Example

@@ -22,10 +22,15 @@ paths:
         The authenticated API key resolves the project. If wait=true and the
         request completes within the wait timeout, ReqRun returns a normal chat
         completion response. Otherwise it returns an async response using the
-        durable ReqRun request id.
+        durable ReqRun request id. Hosted keys also require signed request
+        headers derived from the signing secret shown when the key is created.
       operationId: createChatCompletion
       tags:
         - Chat
+      parameters:
+        - $ref: '#/components/parameters/ReqRunTimestamp'
+        - $ref: '#/components/parameters/ReqRunNonce'
+        - $ref: '#/components/parameters/ReqRunSignature'
       requestBody:
         required: true
         content:
@@ -69,7 +74,9 @@ paths:
   /v1/requests/{id}:
     get:
       summary: Get request status
-      description: Returns the current status of an async request.
+      description: >
+        Returns the current status of an async request. Hosted keys require the
+        same signed request headers used during submission.
       operationId: getRequest
       tags:
         - Requests
@@ -79,6 +86,9 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/ReqRunTimestamp'
+        - $ref: '#/components/parameters/ReqRunNonce'
+        - $ref: '#/components/parameters/ReqRunSignature'
       responses:
         '200':
           description: Request found
@@ -112,10 +122,34 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
 components:
+  parameters:
+    ReqRunTimestamp:
+      name: X-ReqRun-Timestamp
+      in: header
+      required: true
+      schema:
+        type: string
+      description: ISO 8601 UTC timestamp used in the request signature payload.
+    ReqRunNonce:
+      name: X-ReqRun-Nonce
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Unique nonce for replay protection.
+    ReqRunSignature:
+      name: X-ReqRun-Signature
+      in: header
+      required: true
+      schema:
+        type: string
+      description: v1 HMAC SHA-256 signature built from method, path, timestamp, nonce, and body hash.
+
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+      description: Bearer API key. Hosted keys also require signature headers derived from the key's signing secret.
 
   schemas:
     ChatMessage:

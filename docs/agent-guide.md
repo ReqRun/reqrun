@@ -12,13 +12,14 @@ This guide is for coding agents, LLM-powered tools, and automated integrators.
 ## Canonical ReqRun facts
 
 - Hosted base URL: `https://api.reqrun.com`
-- Auth: Bearer ReqRun project API key
+- Auth: Bearer ReqRun project API key plus `X-ReqRun-Timestamp`, `X-ReqRun-Nonce`, and `X-ReqRun-Signature`
 - Submit: `POST /v1/chat/completions`
 - Status: `GET /v1/requests/{id}`
 - Async request ids start with `rr_`
 - `wait=true` tries fast-path completion
 - `wait=false` returns async request state immediately
 - `idempotency_key` deduplicates requests within the same project
+- Signature source: the signing secret shown once when the project API key is created
 
 ## Request shape
 
@@ -70,6 +71,8 @@ If the response object is `chat.completion.async`, store `id` and later call:
 ```text
 GET /v1/requests/{id}
 ```
+
+Use the same signed headers for both calls.
 
 ## Best starter repos
 

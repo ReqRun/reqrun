@@ -14,6 +14,7 @@ Use this when you want a serverless function to submit work to ReqRun and return
 
 ```env
 REQRUN_API_KEY=REQRUN_LIVE_YOUR_PROJECT_KEY_HERE
+REQRUN_SIGNING_SECRET=REQRUN_SIGNING_SECRET_HERE
 ```
 
 ## Example
